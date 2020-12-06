@@ -13,6 +13,13 @@ cd ~/Yet-Another-EfficientDet-Pytorch
 # test results
 rm -f test_results.txt
 python ./scripts/sb_speed_test.py -c 0 --gpu >> test_results.txt
+
+# if the aboved work, try with similar batch sizes for c=0
+python ./scripts/sb_speed_test.py -c 0 --gpu --image-batch-size 4 >> test_results.txt
+python ./scripts/sb_speed_test.py -c 0 --gpu --image-batch-size 8 >> test_results.txt
+python ./scripts/sb_speed_test.py -c 0 --gpu --image-batch-size 16 >> test_results.txt
+
+# choose a batch that works, try for different c values
 python ./scripts/sb_speed_test.py -c 1 --gpu >> test_results.txt
 python ./scripts/sb_speed_test.py -c 2 --gpu >> test_results.txt
 python ./scripts/sb_speed_test.py -c 3 --gpu >> test_results.txt

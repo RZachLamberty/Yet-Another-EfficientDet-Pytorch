@@ -209,5 +209,5 @@ if __name__ == '__main__':
     main(compound_coef=args.compound_coef,
          nms_threshold=args.nms_threshold,
          use_cuda=args.gpu,
-         use_float16=args.float16
+         use_float16=args.float16,
          image_batch_size=args.image_batch_size)
