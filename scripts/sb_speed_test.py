@@ -206,6 +206,7 @@ if __name__ == '__main__':
     print(f'nms_threshold = {args.nms_threshold}')
     print(f'gpu = {args.gpu}')
     print(f'float16 = {args.float16}\n')
+    print(f'image_batch_size = {args.image_batch_size}')
     main(compound_coef=args.compound_coef,
          nms_threshold=args.nms_threshold,
          use_cuda=args.gpu,
