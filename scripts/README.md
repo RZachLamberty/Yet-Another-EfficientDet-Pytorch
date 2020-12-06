@@ -1,12 +1,16 @@
 # testing speed of this repo only on a single gpu instance
 
 + create `p3.2xlarge` (or whatever)
-+ run `sb_init_dev.sh`
-+ run `get_data.py`
-+ run `sb_speed_test.py`
- 
+
 ```shell
+git clone https://github.com/RZachLamberty/Yet-Another-EfficientDet-Pytorch.git
 cd ~/Yet-Another-EfficientDet-Pytorch
+
+# setup
+./scripts/sb_init_dev.sh
+./scripts/get_data.py
+
+# test results
 rm -f test_results.txt
 python ./scripts/sb_speed_test.py -c 0 --gpu >> test_results.txt
 python ./scripts/sb_speed_test.py -c 1 --gpu >> test_results.txt

@@ -195,6 +195,7 @@ def parse_args():
                     help='nms threshold, don\'t change it if not for testing purposes')
     ap.add_argument('--gpu', action='store_true')
     ap.add_argument('--float16', action='store_true')
+    ap.add_argument('--image-batch-size', type=int, default=2)
     return ap.parse_args()
 
 
@@ -208,4 +209,5 @@ if __name__ == '__main__':
     main(compound_coef=args.compound_coef,
          nms_threshold=args.nms_threshold,
          use_cuda=args.gpu,
-         use_float16=args.float16)
+         use_float16=args.float16
+         image_batch_size=args.image_batch_size)
