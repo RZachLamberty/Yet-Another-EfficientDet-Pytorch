@@ -43,3 +43,45 @@ python ./scripts/sb_speed_test.py -c 8 --gpu --float16 >> test_results.txt
 
 + on local machine, `scp edtest:~/Yet-Another-EfficientDet-Pytorch/test_results.txt .`
 + shut down instance
+
+
+parsing the `test_results.txt` file:
+
+```python
+import re
+import numpy as np
+import pandas as pd
+
+with open('data/test_results.txt', 'r') as fp:
+    results = [_ for _ in fp.read().split('=' * 80) if _]
+
+def parse_results(r):
+    d = {}
+    d['compound_coef'] = int(re.search('compound_coef = (\d)', r, re.MULTILINE).groups()[0])
+    d['nms_threshold'] = float(re.search('nms_threshold = ([\d\.]+)', r, re.MULTILINE).groups()[0])
+    d['gpu'] = bool(re.search('gpu = (True|False)', r, re.MULTILINE).groups()[0])
+    d['float16'] = bool(re.search('float16 = (True|False)', r, re.MULTILINE).groups()[0])
+    d['image_batch_size'] = int(re.search('image_batch_size = (\d+)', r, re.MULTILINE).groups()[0])
+    fps_spf = re.findall('batch_time.*\nbatch_size.*\nFPS = (?P<fps>[\d\.]+)\nSPF = (?P<spf>[\d\.]+)',
+                         r, re.MULTILINE)
+    d['batch_fps_vals'] =  [float(fps) for (fps, spf) in fps_spf]
+    d['batch_spf_vals'] =  [float(spf) for (fps, spf) in fps_spf]
+    
+    for k in ['fps', 'spf']:
+        d[f"batch_{k}_avg"] = np.mean(d[f"batch_{k}_vals"]) 
+        d[f"batch_{k}_std"] = np.std(d[f"batch_{k}_vals"])
+    
+    try:
+        t, fps, spf = re.search('final summary.*\ntotal processing time: (?P<total_time>[\d\.]+) \(s\)\n.*\n.*\nFPS: (?P<fps>[\d\.]+)\nSPF: (?P<spf>[\d\.]+)',
+                                r, re.MULTILINE).groups()
+        d['total_time'] = float(t)
+        d['fps'] = float(fps)
+        d['spf'] = float(spf)
+    except AttributeError:
+        d['fps'] = None
+        d['spf'] = None
+
+    return d
+
+results = pd.DataFrame([parse_results(r) for r in results])
+```
